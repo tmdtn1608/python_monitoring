@@ -45,7 +45,7 @@ class MyApp(App):
             Label(text='라이센스',font_name="MyFont", size_hint_x=None,width=150)
         )
         grid.add_widget(
-            Label(text='라이센스명', font_name="MyFont", size_hint_x=None,width=150)
+            Label(text='라이센스 유효', font_name="MyFont", size_hint_x=None,width=200)
         )
         grid.add_widget(
             Label(text='서버전송',font_name="MyFont", size_hint_x=None,width=150)

@@ -63,6 +63,11 @@ class MyApp(App):
         print("send request")
         # TODO : http request로 전송.
 
+'''
+라이센스 정보 획득
+'''
+def get_license_info() -> bool :
+    return True
 
 if __name__ == '__main__':
     MyApp().run()

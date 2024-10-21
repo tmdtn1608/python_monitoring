@@ -13,7 +13,7 @@ if(not num2.isdigit()) :
 else :
     num2_cast : int = int(num2)
     if(num2_cast < 1 or num2_cast > 100) : 
-        print("숫자는 1부터 100 사이")
+        print("1부터 100까지 중에 숫자를 입력하세요")
     else :
         if(num2_cast > num1) :
             print("숫자가 커요")

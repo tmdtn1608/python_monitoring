@@ -92,7 +92,6 @@ class MyApp(App):
         process_info = self.monitoring_service.getProcess()
         json_data = json.dumps(process_info)
         await websocket.send(json_data)
-        # print("Sent process info:", json_data)
 
     def on_stop(self):
         print("Stopping the app...")

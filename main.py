@@ -1,3 +1,9 @@
+import os
+import logging
+# Kivy 로깅을 완전히 비활성화하기 위한 환경 변수 설정
+os.environ['KIVY_NO_CONSOLELOG'] = '1'
+# 기본 Python 로깅 설정
+logging.getLogger('kivy').disabled = True
 from kivy.app import App
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.label import Label
@@ -5,6 +11,8 @@ from kivy.uix.button import Button
 from kivy.core.window import Window
 from kivy.core.text import LabelBase
 from kivy.clock import Clock
+from kivy.config import Config
+
 import asyncio
 import websockets
 import requests
@@ -12,6 +20,7 @@ import json
 import threading
 from getmac import get_mac_address
 from Services.monitoringService import monitoringService
+import keyring
 
 class MyApp(App):
     
@@ -25,10 +34,19 @@ class MyApp(App):
         LabelBase.register(name='MyFont', fn_regular='./Resources/D2Coding-Ver1.3.2-20180524.ttf')
 
         grid = GridLayout(cols=2, rows=3, padding=15, spacing=15)
-        # TODO : keyring을 통해서 디바이스에 저장된 라이센스 값 확인
+        # keyring을 통해서 디바이스에 저장된 라이센스 값 확인
+        license_info = keyring.get_password("system", "username")
+        if license_info is None :
+            print("No license. Set license info")
+            # keyring.set_password("system","username","TESTPW")
+        else :
+            print("license : ", license_info)
+        # keyring.delete_password("system","username")
+
         # 라이센스값이 있으면 라이센스 정보 표시, 이후 통신 개시
         # 라이센스값이 없으면 라이센스 등록버튼
         # -> 라이센스 추가 window 및 등록 API 연동 (라이센스 번호, 디바이스 mac address)
+    
 
         # MAC 주소 가져오기
         mac_address = get_mac_address()

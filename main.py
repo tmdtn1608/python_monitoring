@@ -1,9 +1,6 @@
 import os
-import logging
 # Kivy 로깅을 완전히 비활성화하기 위한 환경 변수 설정
 os.environ['KIVY_NO_CONSOLELOG'] = '1'
-# 기본 Python 로깅 설정
-logging.getLogger('kivy').disabled = True
 from kivy.app import App
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.label import Label
@@ -11,7 +8,6 @@ from kivy.uix.button import Button
 from kivy.core.window import Window
 from kivy.core.text import LabelBase
 from kivy.clock import Clock
-from kivy.config import Config
 
 import asyncio
 import websockets

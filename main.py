@@ -10,7 +10,7 @@ import websockets
 import requests
 import json
 import threading
-
+from getmac import get_mac_address
 from Services.monitoringService import monitoringService
 
 class MyApp(App):
@@ -25,6 +25,14 @@ class MyApp(App):
         LabelBase.register(name='MyFont', fn_regular='./Resources/D2Coding-Ver1.3.2-20180524.ttf')
 
         grid = GridLayout(cols=2, rows=3, padding=15, spacing=15)
+        # TODO : keyring을 통해서 디바이스에 저장된 라이센스 값 확인
+        # 라이센스값이 있으면 라이센스 정보 표시, 이후 통신 개시
+        # 라이센스값이 없으면 라이센스 등록버튼
+        # -> 라이센스 추가 window 및 등록 API 연동 (라이센스 번호, 디바이스 mac address)
+
+        # MAC 주소 가져오기
+        mac_address = get_mac_address()
+        print("MAC 주소:", mac_address)
 
         grid.add_widget(Label(text='서버상태', font_name="MyFont"))
         grid.add_widget(Label(text='정상', font_name="MyFont"))
@@ -62,16 +70,15 @@ class MyApp(App):
                 print("Connected to WebSocket!")
                 while True:
                     await self.send_process_info(websocket)
-                    await asyncio.sleep(5)  # Wait before sending the next message
+                    await asyncio.sleep(5) 
         except websockets.ConnectionClosed:
             print("Connection closed")
 
     async def send_process_info(self, websocket):
         process_info = self.monitoring_service.getProcess()
-        print("============================\n",process_info) # why return None?
         json_data = json.dumps(process_info)
-        await websocket.send(json_data)  # Send the JSON data
-        print("Sent process info:", json_data)
+        await websocket.send(json_data)
+        # print("Sent process info:", json_data)
 
     def on_stop(self):
         print("Stopping the app...")

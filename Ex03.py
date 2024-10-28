@@ -4,7 +4,7 @@
 # 0을 입력하면 종료. while문
 
 """
-input값 유효성 확인.
+input값 유효성 확인 및 계산진행 확인.
 str/int 여부 및 0 판별
 """
 def is_num(param: str) -> bool :
@@ -21,7 +21,7 @@ def input_num(cnt: int) -> bool | int :
     else : return num
 
 """
-
+While & break로 진행관리
 """
 while (True) :
     num1 = input_num(1)

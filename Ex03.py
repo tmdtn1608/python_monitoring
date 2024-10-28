@@ -16,7 +16,7 @@ def is_num(param: str) -> bool :
 반복 input
 """
 def input_num(cnt: int) -> bool | int :
-    num = input(f"숫자 {cnt}를 입력하세요")
+    num = input(f"숫자 {cnt}를 입력하세요") # input -> str
     if(not is_num(num)) : return False
     else : return num
 

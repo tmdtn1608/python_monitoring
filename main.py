@@ -82,6 +82,7 @@ class MyApp(App):
         try:
             async with websockets.connect(uri) as websocket:
                 print("Connected to WebSocket!")
+                self.websocket = websocket
                 while True:
                     await self.send_process_info(websocket)
                     await asyncio.sleep(5) 
@@ -95,6 +96,9 @@ class MyApp(App):
 
     def on_stop(self):
         print("Stopping the app...")
+        # TODO : 코드는 작성했으나 동작확인 필요.
+        if(self.websocket is not None):
+            asyncio.get_event_loop().create_task(self.websocket.close())
 
 if __name__ == '__main__':
     MyApp().run()

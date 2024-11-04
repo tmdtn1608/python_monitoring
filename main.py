@@ -1,6 +1,6 @@
 import os
 # Kivy 로깅을 완전히 비활성화하기 위한 환경 변수 설정
-os.environ['KIVY_NO_CONSOLELOG'] = '1'
+# os.environ['KIVY_NO_CONSOLELOG'] = '1'
 #kivy ui
 from kivy.app import App
 from kivy.uix.gridlayout import GridLayout
@@ -19,7 +19,7 @@ import json
 import threading
 # service & component
 from Services.monitoringService import monitoringService
-from Services.licenseService import get_license_info, check_license
+from Services.licenseService import get_license_info, check_license, set_license_info
 from component import get_license_input, get_license_validation
 from Const import BASE_URL
 
@@ -44,7 +44,8 @@ class MyApp(App):
         license_info = get_license_info()
         if license_info is None :
             print("No license. Set license info")
-            grid.add_widget(get_license_input(self))
+            box, self.license_input = get_license_input(self)
+            grid.add_widget(box)
         else :
             print("license : ", license_info)
             valid_check = check_license()
@@ -63,7 +64,9 @@ class MyApp(App):
         return grid
     
     def regist_request(self,instance) :
-        print('press resgist')
+        license_text = self.license_input.text
+        set_license_info(license_text)
+
 
     def send_request(self, instance):
         response = requests.get(BASE_URL + "/")

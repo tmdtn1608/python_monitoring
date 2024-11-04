@@ -4,7 +4,7 @@ from kivy.uix.label import Label
 from kivy.uix.button import Button
 from Services.licenseService import check_license
 
-def get_license_input(instance ) -> BoxLayout:
+def get_license_input(instance) -> tuple[BoxLayout, TextInput]:
     box = BoxLayout(orientation='horizontal')
     # TextInput 추가
     text_input = TextInput(hint_text='라이센스 입력', font_name="MyFont")
@@ -15,7 +15,7 @@ def get_license_input(instance ) -> BoxLayout:
     # TODO : 이벤트 바인딩
     send_btn.bind(on_press=instance.regist_request) 
     box.add_widget(send_btn)
-    return box
+    return box, text_input
 
 def get_license_validation(param : bool) -> Label: 
     value = '유효' if param == True else '무효'

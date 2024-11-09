@@ -1,6 +1,6 @@
 import os
 # Kivy 로깅 비활성화 환경변수
-os.environ['KIVY_NO_CONSOLELOG'] = '1'
+# os.environ['KIVY_NO_CONSOLELOG'] = '1'
 #kivy ui
 from kivy.app import App
 from kivy.uix.gridlayout import GridLayout
@@ -89,18 +89,20 @@ class MyApp(App):
 
 
     async def connect(self):
-        
+
         uri = "ws://localhost:5000/ws"
-        try:
-            async with websockets.connect(uri) as websocket:
-                print("Connected to WebSocket!")
-                login_res : bool = send_history(CLIENT_LOGIN)
-                self.websocket = websocket
-                while login_res:
-                    await self.send_process_info(websocket)
-                    await asyncio.sleep(5) 
-        except websockets.ConnectionClosed:
-            print("Connection closed")
+        while True : 
+            try:
+                async with websockets.connect(uri) as websocket:
+                    print("Connected to WebSocket!")
+                    login_res : bool = send_history(CLIENT_LOGIN)
+                    self.websocket = websocket
+                    while login_res:
+                        await self.send_process_info(websocket)
+                        await asyncio.sleep(5) 
+            except websockets.ConnectionClosed:
+                send_history(CLIENT_LOGOUT)
+                print("Connection closed")
 
     async def send_process_info(self, websocket):
         # json dict[str,str]
@@ -108,24 +110,13 @@ class MyApp(App):
         device = get_mac_address()
         process_json = {"device": device, "process": process_info}
         json_txt = json.dumps(process_json)
+        # FIXME : websocket 전송이 아닌 http로 전송
         await websocket.send(json_txt)
 
     def on_stop(self):
         print("Stopping the app...")
-        if(self.websocket is not None):
-            # def notify_server():
-            #     try:
-            #         send_history(CLIENT_LOGOUT)
-            #     except requests.exceptions.RequestException as e:
-            #         print(f"Failed to notify server: {e}")
-
-            # # 비동기로 실행하여 앱 종료가 빠르게 이루어지도록 설정
-            # thread = threading.Thread(target=notify_server)
-            # thread.daemon = True  # 메인 스레드 종료 시 함께 종료
-            # thread.start()
-            send_history(CLIENT_LOGOUT)
-            print('check ')
-            # asyncio.get_event_loop().create_task(self.websocket.close())
+        send_history(CLIENT_LOGOUT)
+        print('check ')
 
 if __name__ == '__main__':
     MyApp().run()

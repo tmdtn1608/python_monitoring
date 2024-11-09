@@ -2,7 +2,6 @@ import os
 # Kivy 로깅 비활성화 환경변수
 os.environ['KIVY_NO_CONSOLELOG'] = '1'
 #kivy ui
-from getmac import get_mac_address
 from kivy.app import App
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.boxlayout import BoxLayout
@@ -18,6 +17,7 @@ import websockets
 import requests
 import json
 import threading
+from getmac import get_mac_address
 # service & component
 from Services.monitoringService import monitoringService
 from Services.licenseService import get_license_info, check_license, reset_license, set_license_info
@@ -103,10 +103,12 @@ class MyApp(App):
             print("Connection closed")
 
     async def send_process_info(self, websocket):
+        # json dict[str,str]
         process_info = self.monitoring_service.getProcess()
-        json_data = json.dumps(process_info)
-        # await websocket.send(json_data)
-        await websocket.send("Send test")
+        device = get_mac_address()
+        process_json = {"device": device, "process": process_info}
+        json_txt = json.dumps(process_json)
+        await websocket.send(json_txt)
 
     def on_stop(self):
         print("Stopping the app...")

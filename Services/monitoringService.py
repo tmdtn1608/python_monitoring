@@ -21,7 +21,6 @@ class monitoringService():
             print("Running Linux specific function.")
             return self.getLinuxProcess()
         elif self.os_name == 'Darwin':  # macOS의 경우
-            print("Running macOS specific function.")
             return self.getMacProcess()
         else:
             print("Unknown Operating System.")
@@ -34,7 +33,8 @@ class monitoringService():
             process_list.append(process_info)
 
         json_output = json.dumps(process_list, indent=4)
-        return json_output
+        # return json_output
+        return process_list
 
     def getWindowsProcess(self) -> json :
         process_list = []

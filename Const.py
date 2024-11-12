@@ -2,6 +2,7 @@
 BASE_URL='http://localhost:5000'
 LICENSE_URL='http://localhost:5000/license'
 HISTORY_URL= 'http://localhost:5000/history'
+LOG_URL='http://localhost:5000/log'
 # HISTORY ACT TYPE
 CLIENT_LOGIN = "Client login",
 CLIENT_LOGOUT = "Client logout",

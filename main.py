@@ -22,6 +22,7 @@ from getmac import get_mac_address
 from Services.monitoringService import monitoringService
 from Services.licenseService import get_license_info, check_license, reset_license, set_license_info
 from Services.historyService import send_history
+from Services.logService import send_process_log
 from component import get_license_input, get_license_validation
 from Const import BASE_URL, CLIENT_LOGIN, CLIENT_LOGOUT, HISTORY_URL
 
@@ -97,6 +98,7 @@ class MyApp(App):
                     print("Connected to WebSocket!")
                     login_res : bool = send_history(CLIENT_LOGIN)
                     self.websocket = websocket
+                    
                     while login_res:
                         await self.send_process_info(websocket)
                         await asyncio.sleep(5) 
@@ -109,9 +111,8 @@ class MyApp(App):
         process_info = self.monitoring_service.getProcess()
         device = get_mac_address()
         process_json = {"device": device, "process": process_info}
-        json_txt = json.dumps(process_json)
-        # FIXME : websocket 전송이 아닌 http로 전송
-        await websocket.send(json_txt)
+        send_process_log(process_json)
+        await websocket.send(device)
 
     def on_stop(self):
         print("Stopping the app...")

@@ -1,4 +1,5 @@
 import os
+import platform
 # Kivy 로깅 비활성화 환경변수
 # os.environ['KIVY_NO_CONSOLELOG'] = '1'
 #kivy ui
@@ -11,6 +12,8 @@ from kivy.core.window import Window
 from kivy.core.text import LabelBase
 from kivy.clock import Clock
 from kivy.uix.textinput import TextInput
+# pystray, pillow
+from pystray import Icon, MenuItem, Menu
 # module
 import asyncio
 import websockets
@@ -20,15 +23,20 @@ import threading
 from getmac import get_mac_address
 # service & component
 from Services.monitoringService import monitoringService
+from Services.settingService import settingService
 from Services.licenseService import get_license_info, check_license, reset_license, set_license_info
 from Services.historyService import send_history
 from Services.logService import send_process_log
+from Services.systemService import create_tray_icon
 from component import get_license_input, get_license_validation
-from Const import BASE_URL, CLIENT_LOGIN, CLIENT_LOGOUT, HISTORY_URL
+
+from Const import CLIENT_LOGIN, CLIENT_LOGOUT, FONT_PATH
 
 class MyApp(App):
     
     def build(self):
+        self.setting = settingService()
+        Window.bind(on_minimize=self.on_minimize)
         self.title = "monitor"
         Window.size = (380, 150)
         Window.left = 400
@@ -38,7 +46,7 @@ class MyApp(App):
         # FOR DEBUGGING
         # reset_license()
 
-        LabelBase.register(name='MyFont', fn_regular='./Resources/D2Coding-Ver1.3.2-20180524.ttf')
+        LabelBase.register(name='MyFont', fn_regular=FONT_PATH)
 
         grid = GridLayout(cols=2, rows=3, padding=15, spacing=15, row_force_default=True, row_default_height=70)
     
@@ -53,7 +61,6 @@ class MyApp(App):
             box, self.license_input = get_license_input(self)
             grid.add_widget(box)
         else :
-            print("license : ", license_info)
             valid_check = check_license()
             grid.add_widget(get_license_validation(valid_check))
             if(valid_check == True) :
@@ -72,13 +79,18 @@ class MyApp(App):
 
         return grid
     
+    def on_minimize(self, window, *args):
+        print("minimize chk")
+        Window.hide()
+        threading.Thread(target=create_tray_icon, daemon=True).start()
+    
     def regist_request(self,instance) :
         license_text = self.license_input.text
         set_license_info(license_text)
 
 
     def send_request(self, instance):
-        response = requests.get(BASE_URL + "/")
+        response = requests.get(self.setting.Config["BASE_URL"])
         if response.status_code == 200:
             print(response.text)
         else:
@@ -90,8 +102,7 @@ class MyApp(App):
 
 
     async def connect(self):
-
-        uri = "ws://localhost:5000/ws"
+        uri = self.setting.Config["WS_URL"]
         while True : 
             try:
                 async with websockets.connect(uri) as websocket:
@@ -100,19 +111,30 @@ class MyApp(App):
                     self.websocket = websocket
                     
                     while login_res:
-                        await self.send_process_info(websocket)
-                        await asyncio.sleep(5) 
+                        await asyncio.gather(
+                            self.send_process_info(websocket),
+                            self.receive_terminate()
+                        ) 
             except websockets.ConnectionClosed:
                 send_history(CLIENT_LOGOUT)
                 print("Connection closed")
 
     async def send_process_info(self, websocket):
-        # json dict[str,str]
-        process_info = self.monitoring_service.getProcess()
-        device = get_mac_address()
-        process_json = {"device": device, "process": process_info}
-        send_process_log(process_json)
-        await websocket.send(device)
+        while True :
+            process_info = self.monitoring_service.get_process()
+            device = get_mac_address()
+            process_json = {"device": device, "process": process_info}
+            send_process_log(process_json)
+            websocket_ping = {"from" : device}
+            print("SEND WEBSOCKET")
+            await websocket.send(json.dumps(websocket_ping))
+            await asyncio.sleep(5)
+
+    async def receive_terminate(self):
+        while True:
+            message = await self.websocket.recv()
+            print(f"SUCCESS TERMINATE RECEIVE: {message}")
+            self.monitoring_service.kill_process(message)
 
     def on_stop(self):
         print("Stopping the app...")

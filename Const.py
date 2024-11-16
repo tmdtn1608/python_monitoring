@@ -1,8 +1,12 @@
 # API URL
+
 BASE_URL='http://localhost:5000'
-LICENSE_URL='http://localhost:5000/license'
-HISTORY_URL= 'http://localhost:5000/history'
-LOG_URL='http://localhost:5000/log'
+WS_URL="ws://localhost:5000/ws"
+LICENSE_URL=BASE_URL+'/license'
+HISTORY_URL=BASE_URL+'/history'
+LOG_URL=BASE_URL+'/log'
+# Font path
+FONT_PATH="./Resources/D2Coding-Ver1.3.2-20180524.ttf"
 # HISTORY ACT TYPE
 CLIENT_LOGIN = "Client login",
 CLIENT_LOGOUT = "Client logout",

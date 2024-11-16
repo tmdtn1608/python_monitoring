@@ -1,15 +1,16 @@
 from getmac import get_mac_address
 import requests
-from Const import CLIENT_LOGIN, HISTORY_URL
+from Services.settingService import settingService
 
 
 def send_history(param) -> bool:
+    setting = settingService()
     mac_address = get_mac_address()
     payload = {
         "mac": mac_address,
         "actType" : param
     }
-    response = requests.post(HISTORY_URL, json=payload)
+    response = requests.post(setting.Config["HISTORY_URL"], json=payload)
     if response.status_code == 200 :
         return True
     else : return False

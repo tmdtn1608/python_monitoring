@@ -18,14 +18,14 @@ from kivy.core.window import Window
 # elif platform.system() == 'Windows': 
 #     import win32gui
 #     import win32con
-
-# 시스템 트레이 아이콘 생성 함수
+'''
+시스템 트레이 아이콘 생성 함수. 동작안함?
+'''
 def create_tray_icon(icon):
     # 트레이 아이콘 클릭 시 실행할 함수
     def on_clicked(icon, item):
-        # 트레이 아이콘 클릭 시 애플리케이션 복원
         icon.stop()
-        Window.show()  # 애플리케이션 창을 다시 보이도록 함
+        Window.show()  
 
     width = 64
     height = 64

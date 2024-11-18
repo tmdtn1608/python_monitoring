@@ -2,6 +2,9 @@ import os
 from dotenv import dotenv_values,load_dotenv
 load_dotenv()
 
+'''
+환경변수 싱글톤 리더
+'''
 class settingService ():
     Config = {}
     instance = None

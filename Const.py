@@ -1,5 +1,5 @@
+# 상수 -> 환경변수 대체
 # API URL
-
 BASE_URL='http://localhost:5000'
 WS_URL="ws://localhost:5000/ws"
 LICENSE_URL=BASE_URL+'/license'

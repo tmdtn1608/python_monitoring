@@ -3,7 +3,9 @@ from getmac import get_mac_address
 import requests
 from Services.settingService import settingService
 
-
+'''
+로컬 라이센스값 가져오기(키체인)
+'''
 def get_license_info() -> str | None :
     license_info = keyring.get_password("system", "username")
     return license_info

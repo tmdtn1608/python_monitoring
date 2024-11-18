@@ -2,6 +2,9 @@ from getmac import get_mac_address
 import requests
 from Services.settingService import settingService
 
+'''
+프로세스 항목 전송
+'''
 def send_process_log(param) :
     setting = settingService()
     payload = {

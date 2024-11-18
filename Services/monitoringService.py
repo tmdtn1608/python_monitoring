@@ -4,6 +4,9 @@ import psutil
 import platform
 import os
 
+'''
+모니터 객체
+'''
 class monitoringService():
     os_name = ''
     os_info = ''
@@ -16,10 +19,10 @@ class monitoringService():
 
     def get_process(self) -> dict[str, str] | None : 
         if self.os_name == 'Windows': # Windows에 대한 함수 호출
-            print("Running Windows specific function.")
+            # print("Running Windows specific function.")
             return self.get_windows_process()
         elif self.os_name == 'Linux': # Linux에 대한 함수 호출
-            print("Running Linux specific function.")
+            # print("Running Linux specific function.")
             return self.getLinuxProcess()
         elif self.os_name == 'Darwin':  # macOS의 경우
             return self.get_mac_process()

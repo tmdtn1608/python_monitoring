@@ -1,4 +1,5 @@
 import os
+import sys
 import platform
 # Kivy 로깅 비활성화 환경변수
 # os.environ['KIVY_NO_CONSOLELOG'] = '1'
@@ -32,8 +33,10 @@ from component import get_license_input, get_license_validation
 
 from Const import CLIENT_LOGIN, CLIENT_LOGOUT, FONT_PATH
 
-class MyApp(App):
-    
+class ProcessMonitor(App):
+    '''
+    Initialize
+    '''
     def build(self):
         self.setting = settingService()
         Window.bind(on_minimize=self.on_minimize)
@@ -69,38 +72,35 @@ class MyApp(App):
             else :
                 print("Invalid license or device")
 
-        grid.add_widget(Label(text='서버전송', font_name="MyFont", size_hint_x=None, width=150))
-        send_btn = Button(text='Button 2', font_name="MyFont", size_hint_x=None, width=210)
-        send_btn.bind(on_press=self.send_request)
-        grid.add_widget(send_btn)
-
         # Initialize the monitoring service
         self.monitoring_service = monitoringService()
 
         return grid
-    
+    '''
+    Window 최소화 이벤트 리스너
+    '''
     def on_minimize(self, window, *args):
-        print("minimize chk")
         Window.hide()
         threading.Thread(target=create_tray_icon, daemon=True).start()
-    
+    '''
+    라이센스 등록 API
+    '''
     def regist_request(self,instance) :
         license_text = self.license_input.text
         set_license_info(license_text)
+        # TODO : 재부팅
+        os.execl(sys.executable, sys.executable, *sys.argv)
 
-
-    def send_request(self, instance):
-        response = requests.get(self.setting.Config["BASE_URL"])
-        if response.status_code == 200:
-            print(response.text)
-        else:
-            print(f"Request failed with status code {response.status_code}")
-
+    '''
+    웹소켓 쓰레드
+    '''
     def start_websocket_thread(self):
         # Run the asyncio event loop in this thread
         asyncio.run(self.connect())
 
-
+    '''
+    웹소켓 송수신 및 접속관리
+    '''
     async def connect(self):
         uri = self.setting.Config["WS_URL"]
         while True : 
@@ -119,6 +119,9 @@ class MyApp(App):
                 send_history(CLIENT_LOGOUT)
                 print("Connection closed")
 
+    '''
+    웹소켓 Heartbeat & 프로세스 목록 전송
+    '''
     async def send_process_info(self, websocket):
         while True :
             process_info = self.monitoring_service.get_process()
@@ -130,16 +133,22 @@ class MyApp(App):
             await websocket.send(json.dumps(websocket_ping))
             await asyncio.sleep(5)
 
+    '''
+    프로세스 종료메세지 수신 리스너
+    '''
     async def receive_terminate(self):
         while True:
             message = await self.websocket.recv()
             print(f"SUCCESS TERMINATE RECEIVE: {message}")
             self.monitoring_service.kill_process(message)
 
+    '''
+    Destroy
+    '''
     def on_stop(self):
         print("Stopping the app...")
         send_history(CLIENT_LOGOUT)
         print('check ')
 
 if __name__ == '__main__':
-    MyApp().run()
+    ProcessMonitor().run()

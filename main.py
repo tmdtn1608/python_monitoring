@@ -38,7 +38,7 @@ class ProcessMonitor(App):
     Initialize
     '''
     def build(self):
-        self.setting = settingService()
+        # self.setting = settingService()
         Window.bind(on_minimize=self.on_minimize)
         self.title = "monitor"
         Window.size = (380, 150)

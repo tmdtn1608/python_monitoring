@@ -1,7 +1,6 @@
 import keyring
 from getmac import get_mac_address
 import requests
-from Services.settingService import settingService
 from Const import LICENSE_REGIST_URL, LICENSE_CHK_URL 
 
 '''
@@ -15,7 +14,6 @@ def get_license_info() -> str | None :
 라이센스 등록.
 '''
 def set_license_info(license : str) :
-    setting = settingService()
     
     # license, mac_address 전송
     mac_address = get_mac_address()
@@ -38,7 +36,6 @@ def reset_license() :
 라이센스 유효성 체크
 '''
 def check_license() :
-    setting = settingService()
     
     license = get_license_info()
     mac_address = get_mac_address()

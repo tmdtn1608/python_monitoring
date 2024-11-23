@@ -1,8 +1,6 @@
 import os
 import sys
 import platform
-# Kivy 로깅 비활성화 환경변수
-# os.environ['KIVY_NO_CONSOLELOG'] = '1'
 #kivy ui
 from kivy.app import App
 from kivy.uix.gridlayout import GridLayout
@@ -13,32 +11,29 @@ from kivy.core.window import Window
 from kivy.core.text import LabelBase
 from kivy.clock import Clock
 from kivy.uix.textinput import TextInput
-# pystray, pillow
-from pystray import Icon, MenuItem, Menu
 # module
 import asyncio
 import websockets
-import requests
 import json
 import threading
 from getmac import get_mac_address
 # service & component
 from Services.monitoringService import monitoringService
-from Services.settingService import settingService
-from Services.licenseService import get_license_info, check_license, reset_license, set_license_info
+from Services.licenseService import get_license_info, check_license, set_license_info
 from Services.historyService import send_history
 from Services.logService import send_process_log
 from Services.systemService import create_tray_icon
 from component import get_license_input, get_license_validation
-
 from Const import CLIENT_LOGIN, CLIENT_LOGOUT, WS_URL
+# Kivy 로깅 비활성화 환경변수
+# os.environ['KIVY_NO_CONSOLELOG'] = '1'
+
 
 class ProcessMonitor(App):
     '''
     Initialize
     '''
     def build(self):
-        # self.setting = settingService()
         Window.bind(on_minimize=self.on_minimize)
         self.title = "monitor"
         Window.size = (380, 150)
@@ -74,7 +69,7 @@ class ProcessMonitor(App):
             else :
                 print("Invalid license or device")
 
-        # Initialize the monitoring service
+        # Initialize monitoring service
         self.monitoring_service = monitoringService()
 
         return grid
@@ -90,7 +85,6 @@ class ProcessMonitor(App):
     def regist_request(self,instance) :
         license_text = self.license_input.text
         set_license_info(license_text)
-        # TODO : 재부팅
         os.execl(sys.executable, sys.executable, *sys.argv)
 
     '''
@@ -150,7 +144,6 @@ class ProcessMonitor(App):
     def on_stop(self):
         print("Stopping the app...")
         send_history(CLIENT_LOGOUT)
-        print('check ')
 
 if __name__ == '__main__':
     ProcessMonitor().run()

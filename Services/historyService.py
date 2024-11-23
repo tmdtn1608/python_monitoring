@@ -1,13 +1,11 @@
 from getmac import get_mac_address
 import requests
-from Services.settingService import settingService
 from Const import HISTORY_URL
 
 '''
 로그인/로그아웃 정보 보내기
 '''
 def send_history(param) -> bool:
-    setting = settingService()
     mac_address = get_mac_address()
     payload = {
         "mac": mac_address,

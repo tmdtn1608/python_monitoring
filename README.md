@@ -14,10 +14,6 @@
 ```
 pyinstaller --onefile --name ProcessMonitor main.py 
 ```
-- 가상환경
-```
-/가상환경/경로/bin/python -m PyInstaller --name ProcessMonitor --onefile main.py
-```
 - 실제 
 ```
 ~/ProcessMonitor/.venv/bin/pyinstaller --name ProcessMonitor --onefile --noconsole main.py

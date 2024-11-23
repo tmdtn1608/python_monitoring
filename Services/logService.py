@@ -1,13 +1,12 @@
 from getmac import get_mac_address
 import requests
-from Services.settingService import settingService
 from Const import LOG_URL
 
 '''
 프로세스 항목 전송
 '''
 def send_process_log(param) :
-    setting = settingService()
+
     payload = {
         "device": get_mac_address(),
         "process" : param

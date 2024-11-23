@@ -32,7 +32,7 @@ def set_license_info(license : str) :
 '''
 라이센스 초기화
 '''
-def reset_license(device) :
+def cancel_license(device) :
     # 로컬에서 삭제
     keyring.delete_password("system","username")
     # db에서 삭제

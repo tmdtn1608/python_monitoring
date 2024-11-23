@@ -16,7 +16,7 @@ import threading
 from getmac import get_mac_address
 # service & component
 from Services.monitoringService import monitoringService
-from Services.licenseService import get_license_info, check_license, reset_license, set_license_info
+from Services.licenseService import cancel_license, get_license_info, check_license, set_license_info
 from Services.historyService import send_history
 from Services.logService import send_process_log
 from Services.systemService import create_tray_icon
@@ -40,9 +40,6 @@ class ProcessMonitor(App):
 
         # mac 주소
         self.mac = get_mac_address()
-
-        # FOR DEBUGGING, 라이센스 초기화
-        # reset_license()
 
         LabelBase.register(
             name='MyFont', 
@@ -94,8 +91,7 @@ class ProcessMonitor(App):
     라이센스 초기화
     '''
     def reset_license(self, instance) :
-        # TODO : 라이센스 초기화 기능 
-        reset_license(self.mac)
+        cancel_license(self.mac)
         os.execl(sys.executable, sys.executable, *sys.argv)
     '''
     웹소켓 쓰레드

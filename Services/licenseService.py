@@ -2,6 +2,7 @@ import keyring
 from getmac import get_mac_address
 import requests
 from Services.settingService import settingService
+from Const import LICENSE_REGIST_URL, LICENSE_CHK_URL 
 
 '''
 로컬 라이센스값 가져오기(키체인)
@@ -22,7 +23,7 @@ def set_license_info(license : str) :
         "license": license,
         "mac": mac_address
     }
-    response = requests.post(setting.Config["LICENSE_REGIST_URL"], json=payload)
+    response = requests.post(LICENSE_REGIST_URL, json=payload)
     data = response.json()
     value = data.get('result')
     if (value == True) :
@@ -46,7 +47,7 @@ def check_license() :
         "license": license,
         "mac": mac_address
     }
-    response = requests.post(setting.Config["LICENSE_CHK_URL"], json=payload)
+    response = requests.post(LICENSE_CHK_URL, json=payload)
     data = response.json()
     value = data.get('result')
     return value

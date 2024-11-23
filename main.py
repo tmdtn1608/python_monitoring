@@ -31,7 +31,7 @@ from Services.logService import send_process_log
 from Services.systemService import create_tray_icon
 from component import get_license_input, get_license_validation
 
-from Const import CLIENT_LOGIN, CLIENT_LOGOUT, FONT_PATH
+from Const import CLIENT_LOGIN, CLIENT_LOGOUT, WS_URL
 
 class ProcessMonitor(App):
     '''
@@ -49,7 +49,9 @@ class ProcessMonitor(App):
         # FOR DEBUGGING
         # reset_license()
 
-        LabelBase.register(name='MyFont', fn_regular=FONT_PATH)
+        LabelBase.register(
+            name='MyFont', 
+            fn_regular="/System/Library/Fonts/AppleSDGothicNeo.ttc")
 
         grid = GridLayout(cols=2, rows=3, padding=15, spacing=15, row_force_default=True, row_default_height=70)
     
@@ -102,7 +104,7 @@ class ProcessMonitor(App):
     웹소켓 송수신 및 접속관리
     '''
     async def connect(self):
-        uri = self.setting.Config["WS_URL"]
+        uri = WS_URL
         while True : 
             try:
                 async with websockets.connect(uri) as websocket:

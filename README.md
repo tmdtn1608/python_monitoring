@@ -20,5 +20,5 @@ pyinstaller --onefile --name ProcessMonitor main.py
 ```
 - 실제 
 ```
-~/ProcessMonitor/.venv/bin/pyinstaller --name ProcessMonitor --add-data "Resources/*.ttf:Resources" --add-data ".env:.env"  main.py
+~/ProcessMonitor/.venv/bin/pyinstaller --name ProcessMonitor --onefile --noconsole main.py
 ```

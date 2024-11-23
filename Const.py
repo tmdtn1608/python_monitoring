@@ -7,6 +7,7 @@ LICENSE_REGIST_URL="http://ec2-43-203-251-150.ap-northeast-2.compute.amazonaws.c
 LICENSE_CHK_URL="http://ec2-43-203-251-150.ap-northeast-2.compute.amazonaws.com:5000/license/check"
 HISTORY_URL="http://ec2-43-203-251-150.ap-northeast-2.compute.amazonaws.com:5000/history"
 LOG_URL="http://ec2-43-203-251-150.ap-northeast-2.compute.amazonaws.com:5000/log"
+DEVICE_URL="http://ec2-43-203-251-150.ap-northeast-2.compute.amazonaws.com:5000/device"
 # Font path
 FONT_PATH="D2Coding-Ver1.3.2-20180524.ttf"
 # HISTORY ACT TYPE

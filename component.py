@@ -15,7 +15,6 @@ def get_license_input(instance) -> tuple[BoxLayout, TextInput]:
 
     # Button 추가
     send_btn = Button(text='확인', font_name="MyFont", size_hint_x=None, width=100)
-    # TODO : 이벤트 바인딩
     send_btn.bind(on_press=instance.regist_request) 
     box.add_widget(send_btn)
     return box, text_input

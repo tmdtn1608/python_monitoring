@@ -7,7 +7,7 @@ from kivy.uix.button import Button
 from pystray import Icon, MenuItem, Menu
 from PIL import Image, ImageDraw
 from kivy.core.window import Window
-# # macOS에서만 필요한 라이브러리 임포트
+# macOS에서만 필요한 라이브러리 임포트
 # if platform.system() == 'Darwin':
 #     import objc
 #     from Cocoa import NSApp, NSApplication, NSStatusBar, NSVariableStatusItemLength, NSMenu, NSMenuItem

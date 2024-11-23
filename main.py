@@ -1,16 +1,13 @@
+# basic
 import os
 import sys
-import platform
-#kivy ui
+# kivy ui
 from kivy.app import App
 from kivy.uix.gridlayout import GridLayout
-from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
-from kivy.uix.button import Button
 from kivy.core.window import Window
 from kivy.core.text import LabelBase
-from kivy.clock import Clock
-from kivy.uix.textinput import TextInput
+from kivy.uix.button import Button
 # module
 import asyncio
 import websockets
@@ -19,7 +16,7 @@ import threading
 from getmac import get_mac_address
 # service & component
 from Services.monitoringService import monitoringService
-from Services.licenseService import get_license_info, check_license, set_license_info
+from Services.licenseService import get_license_info, check_license, reset_license, set_license_info
 from Services.historyService import send_history
 from Services.logService import send_process_log
 from Services.systemService import create_tray_icon
@@ -41,7 +38,10 @@ class ProcessMonitor(App):
         Window.top = 100
         Window.resizable = False
 
-        # FOR DEBUGGING
+        # mac 주소
+        self.mac = get_mac_address()
+
+        # FOR DEBUGGING, 라이센스 초기화
         # reset_license()
 
         LabelBase.register(
@@ -69,12 +69,16 @@ class ProcessMonitor(App):
             else :
                 print("Invalid license or device")
 
+        reset_btn = Button(text='라이센스 초기화', font_name="MyFont", size_hint_x=None, width=250)
+        reset_btn.bind(on_press=self.reset_license) 
+        grid.add_widget(reset_btn)
+
         # Initialize monitoring service
         self.monitoring_service = monitoringService()
 
         return grid
     '''
-    Window 최소화 이벤트 리스너
+    Window 최소화 이벤트 리스너 -> 아이콘트레이
     '''
     def on_minimize(self, window, *args):
         Window.hide()
@@ -86,7 +90,13 @@ class ProcessMonitor(App):
         license_text = self.license_input.text
         set_license_info(license_text)
         os.execl(sys.executable, sys.executable, *sys.argv)
-
+    '''
+    라이센스 초기화
+    '''
+    def reset_license(self, instance) :
+        # TODO : 라이센스 초기화 기능 
+        reset_license(self.mac)
+        os.execl(sys.executable, sys.executable, *sys.argv)
     '''
     웹소켓 쓰레드
     '''
@@ -121,10 +131,9 @@ class ProcessMonitor(App):
     async def send_process_info(self, websocket):
         while True :
             process_info = self.monitoring_service.get_process()
-            device = get_mac_address()
-            process_json = {"device": device, "process": process_info}
+            process_json = {"device": self.mac, "process": process_info}
             send_process_log(process_json)
-            websocket_ping = {"from" : device}
+            websocket_ping = {"from" : self.mac}
             print("SEND WEBSOCKET")
             await websocket.send(json.dumps(websocket_ping))
             await asyncio.sleep(5)

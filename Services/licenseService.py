@@ -1,7 +1,7 @@
 import keyring
 from getmac import get_mac_address
 import requests
-from Const import LICENSE_REGIST_URL, LICENSE_CHK_URL 
+from Const import DEVICE_URL, LICENSE_REGIST_URL, LICENSE_CHK_URL 
 
 '''
 로컬 라이센스값 가져오기(키체인)
@@ -29,8 +29,21 @@ def set_license_info(license : str) :
     else : 
         return
 
-def reset_license() :
+'''
+라이센스 초기화
+'''
+def reset_license(device) :
+    # 로컬에서 삭제
     keyring.delete_password("system","username")
+    # db에서 삭제
+    payload = {
+        "mac" : device
+    }
+
+    response = requests.delete(DEVICE_URL, json=payload)
+    if(response.status_code == 200) :
+        return True
+    else : return False
 
 '''
 라이센스 유효성 체크

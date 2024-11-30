@@ -53,8 +53,8 @@ class ProcessMonitor(App):
         
         grid.add_widget(Label(text='라이센스', font_name="MyFont", size_hint_x=None, width=150))
         
-        license_info = get_license_info()
-        if license_info is None :
+        self.license_info = get_license_info()
+        if self.license_info is None :
             print("No license. Set license info")
             box, self.license_input = get_license_input(self)
             grid.add_widget(box)
@@ -150,7 +150,8 @@ class ProcessMonitor(App):
     '''
     def on_stop(self):
         print("Stopping the app...")
-        send_history(CLIENT_LOGOUT)
+        if self.license_info is not None :
+            send_history(CLIENT_LOGOUT)
 
 if __name__ == '__main__':
     ProcessMonitor().run()

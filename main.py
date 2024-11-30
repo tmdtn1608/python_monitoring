@@ -14,6 +14,7 @@ import websockets
 import json
 import threading
 from getmac import get_mac_address
+from dotenv import load_dotenv
 # service & component
 from Services.monitoringService import monitoringService
 from Services.licenseService import cancel_license, get_license_info, check_license, set_license_info
@@ -66,6 +67,7 @@ class ProcessMonitor(App):
             else :
                 print("Invalid license or device")
 
+        # 시연배포용
         reset_btn = Button(text='라이센스 초기화', font_name="MyFont", size_hint_x=None, width=250)
         reset_btn.bind(on_press=self.reset_license) 
         grid.add_widget(reset_btn)
